@@ -39,6 +39,10 @@ function Signup() {
           <h1 className="mt-3 text-2xl font-bold">Join Take Care</h1>
           <p className="text-sm text-muted-foreground">Start reporting issues in your community.</p>
         </div>
+        <GoogleButton label="Continue with Google" />
+        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="h-px flex-1 bg-border" /> or <div className="h-px flex-1 bg-border" />
+        </div>
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <label className="text-sm font-medium">Name</label>
