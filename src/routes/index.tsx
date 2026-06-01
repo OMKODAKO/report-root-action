@@ -3,7 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Camera, MapPin, Send } from "lucide-react";
 import { listReports, getStats } from "@/lib/api/reports.functions";
 import { ReportCard } from "@/components/ReportCard";
-import { Logo } from "@/components/Logo";
+
 
 const reportsQ = queryOptions({ queryKey: ["reports"], queryFn: () => listReports() });
 const statsQ = queryOptions({ queryKey: ["stats"], queryFn: () => getStats() });
