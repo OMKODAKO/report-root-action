@@ -34,10 +34,7 @@ function Home() {
       <section className="border-b bg-gradient-to-b from-primary/5 to-background">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 md:grid-cols-2 md:py-24">
           <div>
-            <div className="mb-6 flex items-center gap-3">
-              <Logo size={72} />
-              <span className="text-sm font-medium text-muted-foreground">Take Care</span>
-            </div>
+
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">
               Small Actions.<br />Visible Change.
             </h1>
