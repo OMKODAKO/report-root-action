@@ -275,6 +275,7 @@ export const submitDonation = createServerFn({ method: "POST" })
       name: z.string().min(1).max(100),
       email: z.string().email().max(255),
       amount: z.number().positive().max(1000000),
+      message: z.string().max(2000).optional(),
     }),
   )
   .handler(async ({ data }) => {

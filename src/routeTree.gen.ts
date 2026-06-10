@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReportNewRouteImport } from './routes/report.new'
@@ -50,6 +51,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -74,6 +80,7 @@ const ReportIdRoute = ReportIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/donate': typeof DonateRoute
   '/feed': typeof FeedRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/donate': typeof DonateRoute
   '/feed': typeof FeedRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/donate': typeof DonateRoute
   '/feed': typeof FeedRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/community'
     | '/dashboard'
     | '/donate'
     | '/feed'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/community'
     | '/dashboard'
     | '/donate'
     | '/feed'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/community'
     | '/dashboard'
     | '/donate'
     | '/feed'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  CommunityRoute: typeof CommunityRoute
   DashboardRoute: typeof DashboardRoute
   DonateRoute: typeof DonateRoute
   FeedRoute: typeof FeedRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -238,6 +258,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  CommunityRoute: CommunityRoute,
   DashboardRoute: DashboardRoute,
   DonateRoute: DonateRoute,
   FeedRoute: FeedRoute,

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getDashboard } from "@/lib/api/reports.functions";
+import { getMyCommunity } from "@/lib/api/community.functions";
 import { ReportCard } from "@/components/ReportCard";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -15,9 +16,15 @@ function Dashboard() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const fetchDash = useServerFn(getDashboard);
+  const fetchMine = useServerFn(getMyCommunity);
   const { data, isLoading } = useQuery({
     queryKey: ["dashboard", user?.id],
     queryFn: () => fetchDash(),
+    enabled: !!user,
+  });
+  const { data: mine } = useQuery({
+    queryKey: ["myCommunity", user?.id],
+    queryFn: () => fetchMine(),
     enabled: !!user,
   });
 
@@ -42,10 +49,76 @@ function Dashboard() {
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Reports" value={data.myReports.length} />
-        <Stat label="Saved" value={data.savedReports.length} />
+        <Stat label="Points" value={mine?.totalPoints ?? 0} />
+        <Stat label="Rank" value={mine?.rank ? `#${mine.rank}` : "—"} />
         <Stat label="Resolved" value={data.myReports.filter((r) => r.status === "resolved").length} />
-        <Stat label="Open" value={data.myReports.filter((r) => r.status === "open").length} />
       </div>
+
+      {mine && (
+        <section className="mt-8 rounded-xl border bg-card p-6">
+          <h2 className="text-lg font-semibold">My badges</h2>
+          {mine.badges.length === 0 ? (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Earn points by reporting, joining discussions, and attending events to unlock badges.
+            </p>
+          ) : (
+            <div className="mt-3 flex flex-wrap gap-3">
+              {mine.badges.map((b: any) => (
+                <div key={b.id} className="rounded-lg border bg-background px-3 py-2 text-sm flex items-center gap-2">
+                  <span className="text-xl">{b.icon}</span>
+                  <span className="font-medium">{b.name}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {mine.totalPoints > 0 && (
+            <div className="mt-4">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Progress to next badge</span>
+                <span>{mine.totalPoints} pts</span>
+              </div>
+              <div className="mt-1 h-2 rounded-full bg-muted overflow-hidden">
+                <div className="h-full bg-primary" style={{ width: `${Math.min(100, (mine.totalPoints / 500) * 100)}%` }} />
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {mine && (mine.joinedEvents.length > 0 || mine.joinedChallenges.length > 0) && (
+        <section className="mt-8 grid gap-6 md:grid-cols-2">
+          <div className="rounded-xl border bg-card p-6">
+            <h2 className="text-lg font-semibold">Joined events</h2>
+            {mine.joinedEvents.length === 0 ? (
+              <p className="mt-2 text-sm text-muted-foreground">No events joined yet.</p>
+            ) : (
+              <ul className="mt-3 space-y-2 text-sm">
+                {mine.joinedEvents.map((e: any) => (
+                  <li key={e.id} className="flex items-center justify-between border-b pb-2 last:border-b-0">
+                    <span className="font-medium">{e.title}</span>
+                    <span className="text-xs text-muted-foreground">{new Date(e.event_date).toLocaleDateString()}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="rounded-xl border bg-card p-6">
+            <h2 className="text-lg font-semibold">Challenge history</h2>
+            {mine.joinedChallenges.length === 0 ? (
+              <p className="mt-2 text-sm text-muted-foreground">No challenges joined yet.</p>
+            ) : (
+              <ul className="mt-3 space-y-2 text-sm">
+                {mine.joinedChallenges.map((c: any) => (
+                  <li key={c.id} className="flex items-center justify-between border-b pb-2 last:border-b-0">
+                    <span className="font-medium">{c.title}</span>
+                    <span className="text-xs text-muted-foreground">{new Date(c.start_date).toLocaleDateString()}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold">My reports</h2>
@@ -76,7 +149,7 @@ function Dashboard() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value }: { label: string | number; value: number | string }) {
   return (
     <div className="rounded-xl border bg-card p-4 text-center">
       <div className="text-2xl font-bold text-primary">{value}</div>
